@@ -1,5 +1,5 @@
 <?php
-$connect = mysqli_connect("localhost:8080", "root", "", "basdat-login");
+$connect = mysqli_connect("localhost", "root", "", "basdat-login");
 
 function get($query) {
     global $connect;

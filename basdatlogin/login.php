@@ -32,15 +32,10 @@ if (isset($_POST["submit"])) {
         echo "
             <script>
                 alert('Captcha salah');
+                alert('Periksa kembali yang anda masukkan!!!');
             </script>
             ";
     }
-} else {
-    echo "
-        <script>
-            alert('Periksa kembali yang anda masukkan!!!');
-        </script>
-        ";
 }
 ?>
 
