@@ -3,32 +3,35 @@ require_once "connection.php";
 session_start();
 
 if (isset($_POST["submit"])) {
-    $email = $_POST["email"];
+    $identity = $_POST["identity"];
     $password = md5($_POST["password"]);
 
     if ($_SESSION["captcha"] == $_POST["captcha"]) {
-        $query = "SELECT * FROM users WHERE email = '$email' ";
+        $query = "SELECT * FROM users WHERE email = '$identity' OR username = '$identity'";
         $row = mysqli_query($connect, $query);
         if ($row->num_rows != 0) {
             $result = mysqli_fetch_object($row);
             if ($result->password == $password) {
                 $_SESSION['login'] = $result->username;
                 header("Location:index.php");
-            } else {
+            } 
+            else {
                 echo "
                     <script>
                         alert('Password salah');
                     </script>
                     ";
             }
-        } else {
+        } 
+        else {
             echo "
                 <script>
-                    alert('Email tidak terdaftar');
+                    alert('Email atau Username tidak terdaftar');
                 </script>
                 ";
         }
-    } else {
+    } 
+    else {
         echo "
             <script>
                 alert('Captcha salah');
@@ -64,7 +67,7 @@ if (isset($_POST["submit"])) {
         </div>
         <div class="login-area">
             <h4 class="text-info text-gradient fw-bold fst-italic">Login To Your Account</h4>
-            <input type="text" name="email" placeholder="Masukkan Email" class="email">
+            <input type="text" name="identity" placeholder="Masukkan Email atau Username" class="email">
             <input type="password" name="password" placeholder="Masukkan Password" class="password">
             <img src="captchagenerator.php" alt="" class="captcha-img">
             <input type="text" name="captcha" placeholder="Masukkan Captcha" class="captcha">
@@ -73,7 +76,7 @@ if (isset($_POST["submit"])) {
             <div class="text-center pt-0 px-lg-2 px-1">
                 <p class="mb-4 text-sm mx-auto">
                     Tidak Mempunyai Akun?
-                    <a href="javascript: register();" class="text-info text-gradient fw-bold">Register Sekarang</a>
+                    <a href="javascript: signUp();" class="text-info text-gradient fw-bold">Sign up now</a>
                 </p>
             </div>
         </div>
@@ -83,7 +86,7 @@ if (isset($_POST["submit"])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
 
     <script>
-        function register() {
+        function signUp() {
             validasi = confirm("Apakah Anda Yakin Ingin Mendaftar?");
             if (validasi == true) {
                 window.location.href = "register.php";

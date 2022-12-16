@@ -1,9 +1,13 @@
 <?php
 require_once "connection.php";
 session_start();
-echo $_SESSION["captcha"];
+// echo $_SESSION["captcha"];
 
 if (isset($_POST["submit"])) {
+    $firstname = $_POST["firstname"];
+    $lastname = $_POST["lastname"];
+    $tmptlhir = $_POST["tmptlhir"];
+    $tgllahir = $_POST["tgllahir"];
     $username = $_POST["username"];
     $email = $_POST["email"];
     $password = md5($_POST["password"]);
@@ -11,19 +15,58 @@ if (isset($_POST["submit"])) {
     // var_dump($password == $cpassword);
     // die;
     if ($password == $cpassword) {
-        $query = "SELECT * FROM users WHERE email = '$email'";
+        $query = "SELECT * FROM users WHERE email = '$email' OR username = '$username'";
         $row = mysqli_query($connect, $query);
         if ($row->num_rows == 0) {
-            $query = "INSERT INTO users (email, username, password) VALUES ('$email', '$username', '$password')";
+            $query = "INSERT INTO users (email, username, password, firstname, lastname, tmptlhir, tgllahir) VALUES ('$email', '$username', '$password', '$firstname', '$lastname', '$tmptlhir', '$tgllahir')";
             $row = mysqli_query($connect, $query);
-            header("Location:index.php");
-        } else {
-            echo "email udah dipake";
+            echo "
+                <script>
+                    alert('Anda berhasil mendaftar');
+                    window.location.href = 'index.php';
+                </script>
+                ";
         }
-    } else {
-        echo "password salah";
+        else if ($row->num_rows == 1) {
+            $result = mysqli_fetch_object($row);
+            // cek username
+            if ($result->username == $username) {
+                echo "
+                    <script>
+                        alert('Username udah dipake');
+                    </script>
+                    ";
+                // die;
+            }
+            // cek email
+            else if ($result->email == $email) {
+                echo "
+                    <script>
+                        alert('Email udah dipake');
+                    </script>
+                    ";
+                // die;
+            }
+        }
+        // else {
+        //     echo "
+        //         <script>
+        //             alert('Email udah dipake');
+        //             window.location.href = 'register.php';
+        //         </script>
+        //         ";
+        //     die;
+        // }
+    } 
+    else {
+        echo "
+        <script>
+            alert('Password tidak sama');
+        </script>
+        ";
     }
-} else {
+} 
+else {
     echo "
         <script>
             alert('Perubahan tidak disimpan');
@@ -55,15 +98,15 @@ if (isset($_POST["submit"])) {
             <h1 class="display-6">Sign Up To Our Website</h1>
         </header>
     </div>
-    <section class="container my-2 bg-dark w-50 text-light p-2">
+    <section class="container my-2 bg-dark w-50 text-light p-2 rounded">
         <form class="row g-3 p-3" method="post" action="register.php">
             <div class="col-md-4">
                 <label for="validationDefault01" class="form-label">First name</label>
-                <input type="text" class="form-control" id="validationDefault01" value="Mark" required>
+                <input type="text" class="form-control" id="validationDefault01" value="Mark" required name="firstname">
             </div>
             <div class="col-md-4">
                 <label for="validationDefault02" class="form-label">Last name</label>
-                <input type="text" class="form-control" id="validationDefault02" value="Otto" required>
+                <input type="text" class="form-control" id="validationDefault02" value="Otto" required name="lastname">
             </div>
             <div class="col-md-4">
                 <label for="validationDefaultUsername" class="form-label">Username</label>
@@ -86,11 +129,11 @@ if (isset($_POST["submit"])) {
             </div>
             <div class="col-12">
                 <label for="inputAddress" class="form-label">Tempat Lahir</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="Daerah Kelahiran">
+                <input type="text" class="form-control" id="inputAddress" placeholder="Daerah Kelahiran" name="tmptlhir">
             </div>
             <div class="col-12">
                 <label for="inputAddress2" class="form-label">Tanggal Lahir</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="01-01-2000">
+                <input type="text" class="form-control" id="inputAddress2" placeholder="YYYY-MM-DD -> 2000-01-20" name="tgllahir">
             </div>
             <!-- <div class="col-12">
                 <div class="form-check">
@@ -103,11 +146,26 @@ if (isset($_POST["submit"])) {
             <div class="col-12">
                 <button type="submit" class="btn btn-primary" value="submit" name="submit">Sign Up</button>
             </div>
+            <div class="text-center pt-0 px-lg-2 px-1">
+                <p class="mb-4 text-sm mx-auto">
+                    Sudah Mempunyai Akun?
+                    <a href="javascript: signIn();" class="text-info text-gradient fw-bold">Sign in now</a>
+                </p>
+            </div>
         </form>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+    <script>
+        function signIn() {
+            validasi = confirm("Apakah Anda Sudah Memiliki Akun?");
+            if (validasi == true) {
+                window.location.href = "login.php";
+            }
+        }
+    </script>
 </body>
 
 </html>
