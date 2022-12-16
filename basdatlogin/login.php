@@ -13,7 +13,13 @@ if (isset($_POST["submit"])) {
             $result = mysqli_fetch_object($row);
             if ($result->password == $password) {
                 $_SESSION['login'] = $result->username;
-                header("Location:index.php");
+                // header("Location:index.php");
+                echo "
+                    <script>
+                        alert('Hallo $result->username');
+                        window.location.href = 'index.php';
+                    </script>
+                    ";
             } 
             else {
                 echo "
