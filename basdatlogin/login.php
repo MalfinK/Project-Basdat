@@ -14,30 +14,51 @@ if (isset($_POST["submit"])) {
             if ($result->password == $password) {
                 $_SESSION['login'] = $result->username;
                 // header("Location:index.php");
+                $waktu = gmdate("H:i", time() + 7 * 3600);
+                $t = explode(":", $waktu);
+                $jam = $t[0];
+                $menit = $t[1];
+                if ($jam >= 00 and $jam < 10) {
+                    if ($menit > 00 and $menit < 60) {
+                        $ucapan = "Hallo $result->username Selamat Pagi";
+                    }
+                } else if ($jam >= 10 and $jam < 15) {
+                    if ($menit > 00 and $menit < 60) {
+                        $ucapan = "Hallo $result->username Selamat Siang";
+                    }
+                } else if ($jam >= 15 and $jam < 18) {
+                    if ($menit > 00 and $menit < 60) {
+                        $ucapan = "Hallo $result->username Selamat Sore";
+                    }
+                } else if ($jam >= 18 and $jam <= 24) {
+                    if ($menit > 00 and $menit < 60) {
+                        $ucapan = "Hallo $result->username Selamat Malam";
+                    }
+                } else {
+                    $ucapan = "Error";
+                }
+                
                 echo "
                     <script>
-                        alert('Hallo $result->username');
+                        alert('$ucapan');
                         window.location.href = 'index.php';
                     </script>
                     ";
-            } 
-            else {
+            } else {
                 echo "
                     <script>
                         alert('Password salah');
                     </script>
                     ";
             }
-        } 
-        else {
+        } else {
             echo "
                 <script>
                     alert('Email atau Username tidak terdaftar');
                 </script>
                 ";
         }
-    } 
-    else {
+    } else {
         echo "
             <script>
                 alert('Captcha salah');
